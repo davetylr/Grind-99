@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GRIND '99 // 90s Grunge At-Home Bodyweight Program</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Grotesk:wght@400;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        grunge: {
+                            black: '#09090b',
+                            dark: '#121215',
+                            card: '#18181c',
+                            border: '#27272a',
+                            acid: '#ccff00',
+                            pink: '#ff0055',
+                            cyan: '#00f0ff',
+                            purple: '#a855f7'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['"Space Grotesk"', 'sans-serif'],
+                        display: ['"Bebas Neue"', 'cursive']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #09090b;
+            color: #f4f4f5;
+            background-image: 
+                radial-gradient(rgba(204, 255, 0, 0.05) 1px, transparent 0),
+                radial-gradient(rgba(255, 0, 85, 0.03) 1px, transparent 0);
+            background-size: 24px 24px;
+            background-position: 0 0, 12px 12px;
+        }
+
+        .grunge-border {
+            border: 3px solid #18181c;
+            box-shadow: 5px 5px 0px #ccff00;
+        }
+
+        .grunge-border-pink {
+            border: 3px solid #18181c;
+            box-shadow: 5px 5px 0px #ff0055;
+        }
+
+        .grunge-border-cyan {
+            border: 3px solid #18181c;
+            box-shadow: 5px 5px 0px #00f0ff;
+        }
+
+        .tape-badge {
+            background: #ccff00;
+            color: #000;
+            transform: rotate(-2deg);
+            font-weight: 800;
+            display: inline-block;
+            padding: 2px 10px;
+            box-shadow: 2px 2px 0px rgba(0,0,0,0.8);
+        }
+
+        .scanlines {
+            background: linear-gradient(
+                to bottom,
+                rgba(255,255,255,0),
+                rgba(255,255,255,0) 50%,
+                rgba(0, 0, 0, 0.3) 50%,
+                rgba(0, 0, 0, 0.3)
+            );
+            background-size: 100% 4px;
+        }
+
+        .glow-text {
+            text-shadow: 0 0 12px rgba(204, 255, 0, 0.6);
+        }
+
+        .glow-pink {
+            text-shadow: 0 0 12px rgba(255, 0, 85, 0.6);
+        }
+
+        /* Pulse animation for active room timer */
+        @keyframes pulse-border {
+            0%, 100% { border-color: #ccff00; box-shadow: 0 0 20px rgba(204, 255, 0, 0.4); }
+            50% { border-color: #ff0055; box-shadow: 0 0 30px rgba(255, 0, 85, 0.6); }
+        }
+
+        .timer-active-pulse {
+            animation: pulse-border 2s infinite;
+        }
+    </style>
+</head>
+<body class="min-h-screen font-sans pb-24 antialiased selection:bg-grunge-acid selection:text-black">
+
+    <header class="border-b-4 border-grunge-acid bg-grunge-dark pt-8 pb-6 px-4 relative overflow-hidden">
+        <div class="absolute right-0 top-0 opacity-10 font-display text-9xl select-none pointer-events-none text-white">1999</div>
+        <div class="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6 relative z-10">
+            <div class="text-center md:text-left">
+                <div class="inline-block tape-badge text-xs uppercase tracking-widest mb-2">RAW POWER // NO EQUIPMENT</div>
+                <h1 class="font-display text-5xl sm:text-7xl tracking-wider text-white uppercase italic">
+                    GRIND <span class="text-grunge-acid glow-text">'99</span>
+                </h1>
+                <p class="text-zinc-400 text-sm sm:text-base max-w-lg mt-1">
+                    Authentic 90s-style bodyweight blueprint by <strong class="text-grunge-pink">Coach Rex</strong>. Zero excuses, 100% raw output.
+                </p>
+            </div>
+
+            <!-- Sound Toggle & Audio Feedback Button -->
+            <div class="flex items-center gap-3 bg-grunge-card p-3 rounded-lg border border-grunge-border">
+                <button id="soundToggleBtn" onclick="toggleSound()" class="flex items-center gap-2 text-xs font-bold uppercase tracking-wider bg-zinc-800 hover:bg-zinc-7xl text-grunge-acid px-3 py-2 rounded transition">
+                    <span id="soundIcon">🔊</span> Sound Beeps: <span id="soundState">ON</span>
+                </button>
+                <button onclick="openRoomTimerModal()" class="bg-grunge-acid text-black font-display text-xl px-5 py-2 uppercase tracking-wide hover:bg-yellow-300 transition grunge-border">
+                    📺 BIG ROOM TIMER
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-6xl mx-auto px-4 mt-8 space-y-10">
+
+        <section class="bg-grunge-card p-6 rounded-xl border border-grunge-border shadow-2xl relative">
+            <div class="flex flex-col md:flex-row items-center justify-between gap-4">
+                <div>
+                    <h2 class="font-display text-2xl uppercase tracking-wide text-white flex items-center gap-2">
+                        <span class="text-grunge-pink">///</span> SELECT YOUR FITNESS LEVEL
+                    </h2>
+                    <p class="text-xs text-zinc-400">Reps, sets, and rest intervals adapt instantly across the blueprint.</p>
+                </div>
+
+                <div class="grid grid-cols-3 gap-2 w-full md:w-auto">
+                    <button onclick="setLevel('beginner')" id="btn-beginner" class="level-btn uppercase font-display text-lg py-2 px-6 rounded border-2 border-transparent transition text-center bg-zinc-800 text-zinc-300 hover:text-white">
+                        Beginner
+                    </button>
+                    <button onclick="setLevel('intermediate')" id="btn-intermediate" class="level-btn uppercase font-display text-lg py-2 px-6 rounded border-2 border-grunge-acid transition text-center bg-grunge-acid text-black font-bold">
+                        Intermediate
+                    </button>
+                    <button onclick="setLevel('advanced')" id="btn-advanced" class="level-btn uppercase font-display text-lg py-2 px-6 rounded border-2 border-transparent transition text-center bg-zinc-800 text-zinc-300 hover:text-white">
+                        Advanced
+                    </button>
+                </div>
+            </div>
+
+            <!-- Level Profile Overview Card -->
+            <div id="levelSummaryBanner" class="mt-4 p-4 bg-zinc-900/80 rounded border-l-4 border-grunge-acid flex flex-wrap justify-between items-center text-sm gap-4">
+                <!-- Dynamically Populated -->
+            </div>
+        </section>
+
+        <section class="space-y-4">
+            <div class="flex items-center gap-3 border-b-2 border-grunge-border pb-2">
+                <span class="bg-grunge-pink text-white font-display px-3 py-1 text-xl">PHASE 1</span>
+                <h2 class="font-display text-3xl uppercase tracking-wider text-white">
+                    DYNAMIC WARM-UP <span class="text-zinc-500 text-xl font-sans">(5 MINS)</span>
+                </h2>
+            </div>
+            <p class="text-zinc-400 text-sm">Prepare your joints, boost heart rate, and prime nervous system before hitting movement patterns.</p>
+
+            <div id="warmupGrid" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <!-- Populated via JS -->
+            </div>
+        </section>
+
+        <section class="space-y-6">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b-2 border-grunge-border pb-2 gap-2">
+                <div class="flex items-center gap-3">
+                    <span class="bg-grunge-acid text-black font-display px-3 py-1 text-xl">PHASE 2</span>
+                    <h2 class="font-display text-3xl uppercase tracking-wider text-white">
+                        FOUNDATIONAL MOVEMENTS <span class="text-grunge-acid text-xl">(6 PATTERNS)</span>
+                    </h2>
+                </div>
+                <span class="text-xs uppercase bg-zinc-800 text-zinc-300 px-3 py-1 rounded-full w-max">
+                    Perform as Circuit or Straight Sets
+                </span>
+            </div>
+
+            <div id="movementsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Populated dynamically with SVG cards -->
+            </div>
+        </section>
+
+        <section class="space-y-4">
+            <div class="flex items-center gap-3 border-b-2 border-grunge-border pb-2">
+                <span class="bg-grunge-cyan text-black font-display px-3 py-1 text-xl">PHASE 3</span>
+                <h2 class="font-display text-3xl uppercase tracking-wider text-white">
+                    COOL-DOWN & MOBILITY <span class="text-zinc-500 text-xl font-sans">(5 MINS)</span>
+                </h2>
+            </div>
+            <p class="text-zinc-400 text-sm">Lower blood pressure, elongate muscles, and jumpstart central nervous system recovery.</p>
+
+            <div id="cooldownGrid" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <!-- Populated via JS -->
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ROOM TIMER MODAL (VISIBLE FROM ACROSS THE ROOM) -->
+    <div id="roomTimerModal" class="fixed inset-0 bg-black/95 backdrop-blur-md z-50 hidden flex-col justify-between p-4 sm:p-8 overflow-y-auto">
+        <!-- Top bar inside modal -->
+        <div class="flex justify-between items-center max-w-5xl mx-auto w-full border-b border-zinc-800 pb-4">
+            <div class="flex items-center gap-3">
+                <span class="tape-badge text-sm">ACROSS-THE-ROOM MODE</span>
+                <h3 class="font-display text-2xl text-white tracking-wider">HUD WORKOUT TIMER</h3>
+            </div>
+            <button onclick="closeRoomTimerModal()" class="text-zinc-400 hover:text-white font-display text-3xl px-4 py-1 border border-zinc-700 hover:border-zinc-500 rounded">
+                ✕ CLOSE
+            </button>
+        </div>
+
+        <!-- Central Huge Display Area -->
+        <div class="max-w-4xl mx-auto w-full my-auto text-center space-y-6 py-6">
+            <div class="inline-block bg-zinc-900/90 px-6 py-2 rounded-full border border-grunge-acid/30">
+                <span id="timerExerciseTitle" class="font-display text-2xl sm:text-4xl text-grunge-acid tracking-wide uppercase">
+                    READY TO WORK
+                </span>
+            </div>
+
+            <!-- BIG DISPLAY READOUT -->
+            <div class="bg-grunge-card border-4 border-grunge-acid rounded-3xl p-6 sm:p-12 shadow-[0_0_50px_rgba(204,255,0,0.2)] timer-active-pulse">
+                <div id="timerPhaseLabel" class="font-display text-2xl sm:text-3xl text-zinc-400 uppercase tracking-widest mb-2">
+                    WORK TIME
+                </div>
+                <!-- Giant Font readable across the room -->
+                <div id="timerDisplay" class="font-display text-7xl sm:text-9xl md:text-[12rem] font-bold leading-none tracking-tighter text-white glow-text">
+                    00:45
+                </div>
+                <div id="timerSubInfo" class="mt-4 font-sans text-lg sm:text-2xl text-grunge-cyan font-semibold">
+                    Set 1 of 3 • Level: Intermediate
+                </div>
+            </div>
+
+            <!-- QUICK WORK / REST PRESETS & SELECTOR -->
+            <div class="flex flex-wrap justify-center gap-3 text-xs sm:text-sm">
+                <button onclick="setTimerPreset(30, 15)" class="bg-zinc-800 hover:bg-zinc-700 text-zinc-200 px-4 py-2 rounded border border-zinc-700">30s Work / 15s Rest</button>
+                <button onclick="setTimerPreset(45, 15)" class="bg-zinc-800 hover:bg-zinc-700 text-zinc-200 px-4 py-2 rounded border border-zinc-700">45s Work / 15s Rest</button>
+                <button onclick="setTimerPreset(60, 30)" class="bg-zinc-800 hover:bg-zinc-700 text-zinc-200 px-4 py-2 rounded border border-zinc-700">60s Work / 30s Rest</button>
+                <button onclick="setTimerPreset(90, 45)" class="bg-zinc-800 hover:bg-zinc-700 text-zinc-200 px-4 py-2 rounded border border-zinc-700">90s Work / 45s Rest</button>
+            </div>
+
+            <!-- TIMER CONTROLS -->
+            <div class="flex justify-center items-center gap-4 sm:gap-6 pt-4">
+                <button id="timerStartBtn" onclick="toggleTimer()" class="bg-grunge-acid text-black font-display text-3xl sm:text-5xl px-8 sm:px-14 py-4 sm:py-6 rounded-2xl hover:bg-yellow-300 transition transform active:scale-95 grunge-border">
+                    START
+                </button>
+                <button onclick="resetTimer()" class="bg-zinc-800 text-white font-display text-2xl sm:text-3xl px-6 sm:px-8 py-4 sm:py-6 rounded-2xl hover:bg-zinc-700 transition border-2 border-zinc-600">
+                    RESET
+                </button>
+                <button onclick="skipTimerPhase()" class="bg-zinc-800 text-grunge-cyan font-display text-2xl sm:text-3xl px-6 sm:px-8 py-4 sm:py-6 rounded-2xl hover:bg-zinc-700 transition border-2 border-grunge-cyan">
+                    NEXT PHASE ➔
+                </button>
+            </div>
+        </div>
+
+        <!-- Footer inside Room Timer -->
+        <div class="max-w-4xl mx-auto w-full text-center text-zinc-500 text-xs sm:text-sm">
+            Tip: Turn phone volume UP for full 90s countdown audio beeps!
+        </div>
+    </div>
+
+    <script>
+        // --- DATA STRUCTURES ---
+        let currentLevel = 'intermediate'; // 'beginner' | 'intermediate' | 'advanced'
+        let soundEnabled = true;
+
+        // Level Specifications
+        const levelConfig = {
+            beginner: {
+                title: "BEGINNER (BUILD BASE)",
+                desc: "Focus on controlled form, mind-muscle connection, and mastering joint stability. Ideal if returning to fitness or starting out.",
+                sets: "2-3 Sets",
+                reps: "8-10 Reps (or 30s Work)",
+                rest: "60-90s Rest between sets",
+                workTime: 30,
+                restTime: 60
+            },
+            intermediate: {
+                title: "INTERMEDIATE (RAW POWER)",
+                desc: "Higher time under tension, increased explosion, and higher density workouts to pack lean muscle and endurance.",
+                sets: "3-4 Sets",
+                reps: "12-15 Reps (or 45s Work)",
+                rest: "45-60s Rest between sets",
+                workTime: 45,
+                restTime: 45
+            },
+            advanced: {
+                title: "ADVANCED (UNLEASH BEAST)",
+                desc: "Max intensity plyometrics, unilateral overload, and minimal rest intervals designed for extreme muscular endurance.",
+                sets: "4-5 Sets",
+                reps: "15-20+ Reps (or 60s Work)",
+                rest: "30-45s Rest between sets",
+                workTime: 60,
+                restTime: 30
+            }
+        };
+
+        // Warm-up Exercises
+        const warmupData = [
+            { name: "Arm Circles & Hugs", duration: "60 Secs", cue: "Prime shoulder rotation & chest stretch", target: "Shoulders/Upper Back" },
+            { name: "Hip Swings & Openers", duration: "60 Secs", cue: "Dynamically open hip flexors & hamstrings", target: "Hips/Glutes" },
+            { name: "Cat-Cow & Thoracic Rotations", duration: "60 Secs", cue: "Mobilize spine & warm up abdominal wall", target: "Spine/Core" },
+            { name: "Bodyweight Good Mornings", duration: "60 Secs", cue: "Hinge lightly to fire up posterior chain", target: "Hamstrings/Lower Back" },
+            { name: "Jumping Jacks / Seal Claps", duration: "60 Secs", cue: "Elevate heart rate & core temperature", target: "Full Body / Cardio" }
+        ];
+
+        // Cool-down Exercises
+        const cooldownData = [
+            { name: "Child's Pose with Reach", duration: "90 Secs", cue: "Decompress spine and stretch lats completely", target: "Lats / Back" },
+            { name: "Pigeon Stretch (L & R)", duration: "90 Secs", cue: "Release tight glutes & deep hip rotators", target: "Hips / Glutes" },
+            { name: "Doorway / Wall Chest Opener", duration: "60 Secs", cue: "Stretch anterior delts and pectoral fibers", target: "Chest" },
+            { name: "Standing Hamstring Fold & Breathe", duration: "60 Secs", cue: "Deep nasal breathing, release posterior tension", target: "Hamstrings / Spine" }
+        ];
+
+        // Foundational 6 Movements Data (Dynamic per level)
+        const movementsData = [
+            {
+                id: "push",
+                pattern: "1. PUSH (Chest / Shoulders / Triceps)",
+                variations: {
+                    beginner: { name: "Incline Wall / Knee Push-Up", reps: "8 - 10 Reps", tips: "Keep body straight as a plank. Elbows back at 45 degrees." },
+                    intermediate: { name: "Full Strict Push-Ups", reps: "12 - 15 Reps", tips: "Screw palms into the floor, squeeze glutes, touch chest to ground." },
+                    advanced: { name: "Decline / Diamond Push-Ups", reps: "15 - 20 Reps", tips: "Elevate feet on couch or bring hands close for maximum tricep load." }
+                },
+                svg: `<svg viewBox="0 0 200 120" class="w-full h-32 text-grunge-acid stroke-current fill-none stroke-2 stroke-linecap-round stroke-linejoin-round">
+                    <line x1="20" y1="100" x2="180" y2="100" stroke="#3f3f46" stroke-width="4"/>
+                    <!-- Figure doing pushup -->
+                    <circle cx="40" cy="55" r="8" fill="#ccff00"/>
+                    <line x1="40" y1="63" x2="110" y2="70" stroke-width="4"/>
+                    <line x1="110" y1="70" x2="160" y2="96" stroke-width="4"/>
+                    <polyline points="55,65 50,85 40,100" stroke-width="3" stroke="#ff0055"/>
+                    <polyline points="150,90 160,98 170,100" stroke-width="3"/>
+                </svg>`
+            },
+            {
+                id: "pull",
+                pattern: "2. PULL (Upper Back / Lats / Biceps)",
+                variations: {
+                    beginner: { name: "Doorframe Isometric / Towel Pulls", reps: "10 - 12 Reps (3s Hold)", tips: "Grasp sturdy doorframe, lean back, pull chest to frame squeezing shoulder blades." },
+                    intermediate: { name: "Under-Table Rows / Inverted Towel Rows", reps: "10 - 12 Reps", tips: "Lie under sturdy table, pull chest up while keeping core rigid." },
+                    advanced: { name: "Archer Bodyweight Rows / Towel Iso Pulls", reps: "12 - 15 Reps", tips: "Unilateral focus. Drive elbows back with explosive power." }
+                },
+                svg: `<svg viewBox="0 0 200 120" class="w-full h-32 text-grunge-cyan stroke-current fill-none stroke-2 stroke-linecap-round stroke-linejoin-round">
+                    <line x1="30" y1="20" x2="30" y2="105" stroke="#3f3f46" stroke-width="6"/>
+                    <!-- Figure pulling door/frame -->
+                    <circle cx="85" cy="45" r="8" fill="#00f0ff"/>
+                    <line x1="85" y1="53" x2="130" y2="80" stroke-width="4"/>
+                    <polyline points="85,60 50,45 30,50" stroke-width="3" stroke="#ccff00"/>
+                    <polyline points="130,80 140,100 150,100" stroke-width="3"/>
+                </svg>`
+            },
+            {
+                id: "squat",
+                pattern: "3. SQUAT (Quads / Glutes / Lower Body)",
+                variations: {
+                    beginner: { name: "Chair / Box Squat", reps: "10 - 12 Reps", tips: "Sit back onto chair controlled, push through heels to stand upright." },
+                    intermediate: { name: "Full Air Squats with Pause", reps: "15 - 20 Reps", tips: "Break parallel at bottom, hold 1s, drive up explosively." },
+                    advanced: { name: "Jump Squats / Pistol Squat Progressions", reps: "15 Reps (or 8/leg)", tips: "Explode off the ground or perform single-leg balance focus." }
+                },
+                svg: `<svg viewBox="0 0 200 120" class="w-full h-32 text-grunge-pink stroke-current fill-none stroke-2 stroke-linecap-round stroke-linejoin-round">
+                    <line x1="20" y1="105" x2="180" y2="105" stroke="#3f3f46" stroke-width="4"/>
+                    <!-- Figure Squatting -->
+                    <circle cx="80" cy="45" r="8" fill="#ff0055"/>
+                    <polyline points="80,53 90,75 70,88" stroke-width="4"/>
+                    <polyline points="70,88 100,88 100,105" stroke-width="4"/>
+                    <polyline points="80,60 110,60" stroke-width="3" stroke="#00f0ff"/>
+                </svg>`
+            },
+            {
+                id: "lunge",
+                pattern: "4. LUNGE (Single Leg Stability & Hip Drive)",
+                variations: {
+                    beginner: { name: "Static Reverse Lunges", reps: "8 Reps / leg", tips: "Step backward, drop back knee gently near floor, keep front shin vertical." },
+                    intermediate: { name: "Walking / Alternating Forward Lunges", reps: "12 Reps / leg", tips: "Drive off front heel to return to standing tall." },
+                    advanced: { name: "Jumping Plyo Lunges", reps: "12 - 15 Reps / leg", tips: "Explode in air switching legs mid-flight with balance." }
+                },
+                svg: `<svg viewBox="0 0 200 120" class="w-full h-32 text-grunge-acid stroke-current fill-none stroke-2 stroke-linecap-round stroke-linejoin-round">
+                    <line x1="20" y1="105" x2="180" y2="105" stroke="#3f3f46" stroke-width="4"/>
+                    <!-- Figure Lunging -->
+                    <circle cx="90" cy="40" r="8" fill="#ccff00"/>
+                    <line x1="90" y1="48" x2="90" y2="70" stroke-width="4"/>
+                    <polyline points="90,70 120,70 120,105" stroke-width="4"/>
+                    <polyline points="90,70 60,85 60,105" stroke-width="4" stroke="#ff0055"/>
+                </svg>`
+            },
+            {
+                id: "hinge",
+                pattern: "5. HINGE (Posterior Chain / Hamstrings / Lower Back)",
+                variations: {
+                    beginner: { name: "Glute Bridges on Floor", reps: "12 - 15 Reps", tips: "Squeeze glutes at top for 2 seconds without arching lower back." },
+                    intermediate: { name: "Single-Leg Glute Bridges", reps: "10 - 12 Reps / leg", tips: "Drive through single heel, keeping hips level throughout movement." },
+                    advanced: { name: "Single-Leg Romanian Deadlift (Bodyweight)", reps: "12 - 15 Reps / leg", tips: "Hinge at hip, extend rear leg parallel to ground with flat back." }
+                },
+                svg: `<svg viewBox="0 0 200 120" class="w-full h-32 text-grunge-purple stroke-current fill-none stroke-2 stroke-linecap-round stroke-linejoin-round">
+                    <line x1="20" y1="105" x2="180" y2="105" stroke="#3f3f46" stroke-width="4"/>
+                    <!-- Figure Glute Bridge -->
+                    <circle cx="45" cy="95" r="8" fill="#a855f7"/>
+                    <polyline points="45,95 90,70 130,70 150,105" stroke-width="4"/>
+                    <line x1="90" y1="70" x2="110" y2="105" stroke-width="3" stroke="#ccff00"/>
+                </svg>`
+            },
+            {
+                id: "core",
+                pattern: "6. CORE (Anti-Extension & Trunk Stability)",
+                variations: {
+                    beginner: { name: "Dead Bug / Knee Plank Hold", reps: "30 Sec Hold", tips: "Press lower back firmly into floor or keep elbow plank aligned." },
+                    intermediate: { name: "Forearm Plank to High Plank / Hollow Hold", reps: "45 Sec Hold", tips: "Brace abdominal wall like getting punched. Lock glutes." },
+                    advanced: { name: "V-Ups / Dragon Flag Progressions", reps: "15 - 20 Reps", tips: "Explosive trunk flexion touching toes at peak apex." }
+                },
+                svg: `<svg viewBox="0 0 200 120" class="w-full h-32 text-grunge-cyan stroke-current fill-none stroke-2 stroke-linecap-round stroke-linejoin-round">
+                    <line x1="20" y1="105" x2="180" y2="105" stroke="#3f3f46" stroke-width="4"/>
+                    <!-- Figure Plank -->
+                    <circle cx="45" cy="70" r="8" fill="#00f0ff"/>
+                    <line x1="45" y1="78" x2="120" y2="82" stroke-width="4"/>
+                    <polyline points="45,80 40,105 50,105" stroke-width="3" stroke="#ff0055"/>
+                    <line x1="120" y1="82" x2="160" y2="100" stroke-width="4"/>
+                </svg>`
+            }
+        ];
+
+        // --- RENDER ENGINE ---
+
+        // Render Summary Banner based on active fitness level
+        function renderSummaryBanner() {
+            const config = levelConfig[currentLevel];
+            const banner = document.getElementById('levelSummaryBanner');
+            banner.innerHTML = `
+                <div>
+                    <span class="tape-badge text-xs mb-1">ACTIVE PROFILE</span>
+                    <h3 class="font-display text-2xl text-white uppercase">${config.title}</h3>
+                    <p class="text-zinc-400 text-xs sm:text-sm max-w-xl">${config.desc}</p>
+                </div>
+                <div class="flex flex-wrap gap-3 font-display text-base">
+                    <div class="bg-zinc-800 px-3 py-1 rounded border border-zinc-700">
+                        TARGET SETS: <span class="text-grunge-acid">${config.sets}</span>
+                    </div>
+                    <div class="bg-zinc-800 px-3 py-1 rounded border border-zinc-700">
+                        REPS/WORK: <span class="text-grunge-cyan">${config.reps}</span>
+                    </div>
+                    <div class="bg-zinc-800 px-3 py-1 rounded border border-zinc-700">
+                        REST PERIOD: <span class="text-grunge-pink">${config.rest}</span>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Render Warmups
+        function renderWarmup() {
+            const container = document.getElementById('warmupGrid');
+            container.innerHTML = warmupData.map((item, idx) => `
+                <div class="bg-grunge-card p-4 rounded-lg border border-grunge-border flex flex-col justify-between hover:border-zinc-500 transition">
+                    <div>
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-xs font-bold text-grunge-pink uppercase tracking-widest">WARMUP #${idx + 1}</span>
+                            <span class="bg-zinc-800 text-xs text-zinc-300 px-2 py-0.5 rounded font-mono">${item.duration}</span>
+                        </div>
+                        <h4 class="font-display text-xl text-white">${item.name}</h4>
+                        <p class="text-xs text-zinc-400 mt-1">${item.cue}</p>
+                    </div>
+                    <div class="mt-4 pt-2 border-t border-zinc-800 flex justify-between items-center text-xs">
+                        <span class="text-zinc-500">Target: ${item.target}</span>
+                        <button onclick="launchTimerFor('${item.name}', 60, 15)" class="text-grunge-acid hover:underline font-bold">
+                            ▶ TIMER (60s)
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Render Cool-Downs
+        function renderCooldown() {
+            const container = document.getElementById('cooldownGrid');
+            container.innerHTML = cooldownData.map((item, idx) => `
+                <div class="bg-grunge-card p-4 rounded-lg border border-grunge-border flex flex-col justify-between hover:border-zinc-500 transition">
+                    <div>
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-xs font-bold text-grunge-cyan uppercase tracking-widest">RECOVERY #${idx + 1}</span>
+                            <span class="bg-zinc-800 text-xs text-zinc-300 px-2 py-0.5 rounded font-mono">${item.duration}</span>
+                        </div>
+                        <h4 class="font-display text-xl text-white">${item.name}</h4>
+                        <p class="text-xs text-zinc-400 mt-1">${item.cue}</p>
+                    </div>
+                    <div class="mt-4 pt-2 border-t border-zinc-800 flex justify-between items-center text-xs">
+                        <span class="text-zinc-500">Target: ${item.target}</span>
+                        <button onclick="launchTimerFor('${item.name}', 90, 10)" class="text-grunge-cyan hover:underline font-bold">
+                            ▶ TIMER (90s)
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Render Movement Cards based on current level
+        function renderMovements() {
+            const container = document.getElementById('movementsGrid');
+            const config = levelConfig[currentLevel];
+
+            container.innerHTML = movementsData.map(item => {
+                const variation = item.variations[currentLevel];
+                return `
+                    <div class="bg-grunge-card rounded-xl border-2 border-grunge-border overflow-hidden flex flex-col justify-between hover:border-grunge-acid transition-all duration-300 shadow-lg">
+                        <div class="p-5 space-y-3">
+                            <div class="flex justify-between items-start">
+                                <h3 class="font-display text-2xl text-white tracking-wide uppercase">${item.pattern}</h3>
+                            </div>
+
+                            <!-- SVG Graphic Illustration -->
+                            <div class="bg-zinc-950 p-3 rounded-lg border border-zinc-800 flex items-center justify-center relative">
+                                ${item.svg}
+                                <span class="absolute bottom-2 right-2 text-[10px] bg-black/80 text-zinc-400 px-2 py-0.5 rounded uppercase border border-zinc-800">Visual Form Guide</span>
+                            </div>
+
+                            <!-- Variation Title -->
+                            <div>
+                                <div class="text-xs text-grunge-acid font-bold uppercase tracking-wider">LEVEL VARIATION</div>
+                                <div class="font-display text-2xl text-white mt-0.5">${variation.name}</div>
+                            </div>
+
+                            <!-- Reps & Sets Badge -->
+                            <div class="grid grid-cols-2 gap-2 text-center text-xs">
+                                <div class="bg-zinc-900 p-2 rounded border border-zinc-800">
+                                    <div class="text-zinc-500 font-bold uppercase">TARGET SETS</div>
+                                    <div class="text-white font-display text-lg text-grunge-acid">${config.sets}</div>
+                                </div>
+                                <div class="bg-zinc-900 p-2 rounded border border-zinc-800">
+                                    <div class="text-zinc-500 font-bold uppercase">TARGET REPS</div>
+                                    <div class="text-white font-display text-lg text-grunge-cyan">${variation.reps}</div>
+                                </div>
+                            </div>
+
+                            <!-- Form Cues -->
+                            <div class="bg-zinc-900/60 p-3 rounded border-l-2 border-grunge-pink text-xs text-zinc-300">
+                                <strong class="text-grunge-pink block uppercase mb-0.5">🔥 Coach's Cue:</strong>
+                                ${variation.tips}
+                            </div>
+                        </div>
+
+                        <!-- Card Action Footer -->
+                        <div class="p-4 bg-zinc-900 border-t border-zinc-800 flex items-center justify-between">
+                            <span class="text-xs text-zinc-400">Rest: ${config.rest}</span>
+                            <button onclick="launchTimerFor('${variation.name}', ${config.workTime}, ${config.restTime})" class="bg-grunge-acid text-black font-display text-lg px-4 py-1.5 rounded uppercase hover:bg-yellow-300 transition grunge-border">
+                                ▶ LOAD IN ROOM TIMER
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Change Level Function
+        function setLevel(level) {
+            currentLevel = level;
+            
+            // Update buttons styling
+            document.querySelectorAll('.level-btn').forEach(btn => {
+                btn.className = "level-btn uppercase font-display text-lg py-2 px-6 rounded border-2 border-transparent transition text-center bg-zinc-800 text-zinc-300 hover:text-white";
+            });
+
+            const activeBtn = document.getElementById(`btn-${level}`);
+            if (activeBtn) {
+                activeBtn.className = "level-btn uppercase font-display text-lg py-2 px-6 rounded border-2 border-grunge-acid transition text-center bg-grunge-acid text-black font-bold";
+            }
+
+            renderSummaryBanner();
+            renderMovements();
+        }
+
+        // --- STREAMING_CHUNK:Building High-Visibility Room Timer Engine & Audio Web API Synth... ---
+
+        // WEB AUDIO SYNTH FOR 90s RETRO BEEPS
+        let audioCtx = null;
+
+        function playBeep(freq = 440, duration = 0.15, type = 'sine') {
+            if (!soundEnabled) return;
+            try {
+                if (!audioCtx) {
+                    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                }
+                if (audioCtx.state === 'suspended') {
+                    audioCtx.resume();
+                }
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = type;
+                osc.frequency.value = freq;
+                gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + duration);
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start();
+                osc.stop(audioCtx.currentTime + duration);
+            } catch (e) {
+                console.log("Audio play error", e);
+            }
+        }
+
+        function toggleSound() {
+            soundEnabled = !soundEnabled;
+            document.getElementById('soundState').innerText = soundEnabled ? "ON" : "OFF";
+            document.getElementById('soundIcon').innerText = soundEnabled ? "🔊" : "🔇";
+        }
+
+        // TIMER STATE
+        let timerInterval = null;
+        let isRunning = false;
+        let isWorkPhase = true;
+        let workDuration = 45;
+        let restDuration = 15;
+        let timeLeft = 45;
+        let currentExerciseName = "FULL BODY CIRCUIT";
+
+        function updateTimerDisplay() {
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            const displayStr = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            document.getElementById('timerDisplay').innerText = displayStr;
+        }
+
+        function toggleTimer() {
+            const btn = document.getElementById('timerStartBtn');
+            if (isRunning) {
+                clearInterval(timerInterval);
+                isRunning = false;
+                btn.innerText = "RESUME";
+                btn.className = "bg-grunge-acid text-black font-display text-3xl sm:text-5xl px-8 sm:px-14 py-4 sm:py-6 rounded-2xl hover:bg-yellow-300 transition grunge-border";
+            } else {
+                isRunning = true;
+                btn.innerText = "PAUSE";
+                btn.className = "bg-grunge-pink text-white font-display text-3xl sm:text-5xl px-8 sm:px-14 py-4 sm:py-6 rounded-2xl hover:bg-pink-600 transition grunge-border-pink";
+                
+                timerInterval = setInterval(() => {
+                    if (timeLeft > 0) {
+                        timeLeft--;
+                        // Audio warning on 3, 2, 1 seconds
+                        if (timeLeft <= 3 && timeLeft > 0) {
+                            playBeep(600, 0.1, 'square');
+                        }
+                        updateTimerDisplay();
+                    } else {
+                        // Switch Phase (Work -> Rest or Rest -> Work)
+                        if (isWorkPhase) {
+                            playBeep(880, 0.4, 'triangle'); // Higher pitch tone for rest transition
+                            isWorkPhase = false;
+                            timeLeft = restDuration;
+                            document.getElementById('timerPhaseLabel').innerText = "REST & BREATHE";
+                            document.getElementById('timerPhaseLabel').className = "font-display text-2xl sm:text-3xl text-grunge-pink uppercase tracking-widest mb-2";
+                        } else {
+                            playBeep(440, 0.4, 'sine'); // Standard tone for work phase
+                            isWorkPhase = true;
+                            timeLeft = workDuration;
+                            document.getElementById('timerPhaseLabel').innerText = "WORK TIME";
+                            document.getElementById('timerPhaseLabel').className = "font-display text-2xl sm:text-3xl text-grunge-acid uppercase tracking-widest mb-2";
+                        }
+                        updateTimerDisplay();
+                    }
+                }, 1000);
+            }
+        }
+
+        function resetTimer() {
+            clearInterval(timerInterval);
+            isRunning = false;
+            isWorkPhase = true;
+            timeLeft = workDuration;
+            document.getElementById('timerPhaseLabel').innerText = "WORK TIME";
+            document.getElementById('timerPhaseLabel').className = "font-display text-2xl sm:text-3xl text-grunge-acid uppercase tracking-widest mb-2";
+            document.getElementById('timerStartBtn').innerText = "START";
+            document.getElementById('timerStartBtn').className = "bg-grunge-acid text-black font-display text-3xl sm:text-5xl px-8 sm:px-14 py-4 sm:py-6 rounded-2xl hover:bg-yellow-300 transition grunge-border";
+            updateTimerDisplay();
+        }
+
+        function skipTimerPhase() {
+            clearInterval(timerInterval);
+            isRunning = false;
+            if (isWorkPhase) {
+                isWorkPhase = false;
+                timeLeft = restDuration;
+                document.getElementById('timerPhaseLabel').innerText = "REST & BREATHE";
+                document.getElementById('timerPhaseLabel').className = "font-display text-2xl sm:text-3xl text-grunge-pink uppercase tracking-widest mb-2";
+            } else {
+                isWorkPhase = true;
+                timeLeft = workDuration;
+                document.getElementById('timerPhaseLabel').innerText = "WORK TIME";
+                document.getElementById('timerPhaseLabel').className = "font-display text-2xl sm:text-3xl text-grunge-acid uppercase tracking-widest mb-2";
+            }
+            document.getElementById('timerStartBtn').innerText = "START";
+            updateTimerDisplay();
+        }
+
+        function setTimerPreset(work, rest) {
+            workDuration = work;
+            restDuration = rest;
+            resetTimer();
+        }
+
+        function launchTimerFor(exerciseName, workSecs, restSecs) {
+            currentExerciseName = exerciseName;
+            workDuration = workSecs;
+            restDuration = restSecs;
+            document.getElementById('timerExerciseTitle').innerText = exerciseName;
+            document.getElementById('timerSubInfo').innerText = `Work: ${workSecs}s • Rest: ${restSecs}s • Level: ${currentLevel.toUpperCase()}`;
+            resetTimer();
+            openRoomTimerModal();
+        }
+
+        function openRoomTimerModal() {
+            document.getElementById('roomTimerModal').classList.remove('hidden');
+            document.getElementById('roomTimerModal').classList.add('flex');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeRoomTimerModal() {
+            document.getElementById('roomTimerModal').classList.add('hidden');
+            document.getElementById('roomTimerModal').classList.remove('flex');
+            document.body.style.overflow = 'auto';
+            if (isRunning) {
+                toggleTimer(); // Pause when closing modal
+            }
+        }
+
+        // INITIALIZATION
+        window.onload = function() {
+            renderSummaryBanner();
+            renderWarmup();
+            renderMovements();
+            renderCooldown();
+            updateTimerDisplay();
+        };
+    </script>
+</body>
+</html>
